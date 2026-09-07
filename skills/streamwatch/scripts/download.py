@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Resolve a /stream-watch source: download a URL via yt-dlp, or point at a local file.
+"""Resolve a /streamwatch source: download a URL via yt-dlp, or point at a local file.
 
 Also pulls captions (manual, then auto-generated) in VTT form so the
 transcript can come from captions before falling back to Whisper.

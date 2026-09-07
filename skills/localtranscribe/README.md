@@ -25,7 +25,7 @@ A [Claude Code skill](https://docs.claude.com/en/docs/claude-code/skills) that t
 
 ## Why local transcription
 
-Unlike the [`stream-watch`](../stream-watch) skill — which falls back to a cloud Whisper API when captions are missing — `localtranscribe` never sends audio anywhere. Transcription runs entirely on-device via whisper.cpp. That makes it the right choice when the content itself is sensitive, or when you'd rather not depend on (or pay for) a cloud API at all.
+Unlike the [`streamwatch`](../streamwatch) skill — which falls back to a cloud Whisper API when captions are missing — `localtranscribe` never sends audio anywhere. Transcription runs entirely on-device via whisper.cpp. That makes it the right choice when the content itself is sensitive, or when you'd rather not depend on (or pay for) a cloud API at all.
 
 ## The analysis format
 

@@ -55,7 +55,7 @@ def load_api_key(prefer: str | None = None) -> tuple[str, str] | tuple[None, Non
             return value or None
         return None
 
-    dotenv_candidates = [Path.home() / ".config" / "stream-watch" / ".env", Path.cwd() / ".env"]
+    dotenv_candidates = [Path.home() / ".config" / "streamwatch" / ".env", Path.cwd() / ".env"]
     order = [("GROQ_API_KEY", "groq"), ("OPENAI_API_KEY", "openai")]
     if prefer:
         order = [pair for pair in order if pair[1] == prefer]
@@ -154,7 +154,7 @@ def _post(endpoint: str, api_key: str, model: str, audio_path: Path) -> dict:
     headers = {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": f"multipart/form-data; boundary={boundary}",
-        "User-Agent": "stream-watch/1.0 (+claude-code)",
+        "User-Agent": "streamwatch/1.0 (+claude-code)",
     }
     context = ssl.create_default_context()
     rate_limit_hits = 0
@@ -175,13 +175,13 @@ def _post(endpoint: str, api_key: str, model: str, audio_path: Path) -> dict:
                     raise SystemExit(f"Whisper rate-limited past retry budget: {exc}")
             delay = RETRY_BASE_DELAY * (2 ** attempt)
             if attempt < MAX_ATTEMPTS - 1:
-                print(f"[stream-watch] whisper HTTP {exc.code} — retrying in {delay:.1f}s", file=sys.stderr)
+                print(f"[streamwatch] whisper HTTP {exc.code} — retrying in {delay:.1f}s", file=sys.stderr)
                 time.sleep(delay)
         except (urllib.error.URLError, TimeoutError, OSError) as exc:
             last_error = exc
             if attempt < MAX_ATTEMPTS - 1:
                 delay = RETRY_BASE_DELAY * (attempt + 1)
-                print(f"[stream-watch] whisper network error — retrying in {delay:.1f}s", file=sys.stderr)
+                print(f"[streamwatch] whisper network error — retrying in {delay:.1f}s", file=sys.stderr)
                 time.sleep(delay)
 
     raise SystemExit(f"Whisper request failed after {MAX_ATTEMPTS} attempts: {last_error}")
@@ -215,7 +215,7 @@ def transcribe_video(video_path: str, audio_out: Path, backend: str | None = Non
         )
 
     endpoint, model = (GROQ_ENDPOINT, GROQ_MODEL) if backend == "groq" else (OPENAI_ENDPOINT, OPENAI_MODEL)
-    print(f"[stream-watch] extracting audio for Whisper ({backend})…", file=sys.stderr)
+    print(f"[streamwatch] extracting audio for Whisper ({backend})…", file=sys.stderr)
     audio_path = extract_audio(video_path, audio_out)
     audio_bytes = audio_path.stat().st_size
 
@@ -235,7 +235,7 @@ def transcribe_video(video_path: str, audio_out: Path, backend: str | None = Non
                 segments.extend(_shift(transcribe_one(path), offset))
             except SystemExit as exc:
                 failures += 1
-                print(f"[stream-watch] chunk {i + 1}/{len(chunks)} failed: {exc}", file=sys.stderr)
+                print(f"[streamwatch] chunk {i + 1}/{len(chunks)} failed: {exc}", file=sys.stderr)
         if failures == len(chunks):
             raise SystemExit("Whisper failed on every audio chunk")
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""/stream-watch entry point.
+"""/streamwatch entry point.
 
 Resolves a video (URL or local path), gets a transcript (captions first,
 Whisper fallback), extracts representative frames, and prints a markdown
@@ -28,7 +28,7 @@ _ENGINE_FOR_DEPTH = {"quick": "keyframe", "standard": "scene", "deep": "scene"}
 
 
 def build_parser() -> argparse.ArgumentParser:
-    ap = argparse.ArgumentParser(prog="stream-watch", description="Watch a video: frames + transcript.")
+    ap = argparse.ArgumentParser(prog="streamwatch", description="Watch a video: frames + transcript.")
     ap.add_argument("source", help="Video URL or local file path")
     ap.add_argument("--depth", choices=["captions-only", "quick", "standard", "deep"], default=None)
     ap.add_argument("--start", default=None, help="Focus range start (SS, MM:SS, HH:MM:SS)")
@@ -51,9 +51,9 @@ def main() -> int:
     if cap is not None and cap < 1:
         raise SystemExit("--max-frames must be positive")
 
-    work = Path(args.out_dir).expanduser().resolve() if args.out_dir else Path(tempfile.mkdtemp(prefix="stream-watch-"))
+    work = Path(args.out_dir).expanduser().resolve() if args.out_dir else Path(tempfile.mkdtemp(prefix="streamwatch-"))
     work.mkdir(parents=True, exist_ok=True)
-    print(f"[stream-watch] working dir: {work}", file=sys.stderr)
+    print(f"[streamwatch] working dir: {work}", file=sys.stderr)
 
     url_source = is_url(args.source)
     transcript_segments: list[dict] = []
@@ -64,7 +64,7 @@ def main() -> int:
     # Captions-only pass first for URLs (cheap, no video download needed).
     if url_source:
         from download import fetch_captions_only
-        print("[stream-watch] checking for captions…", file=sys.stderr)
+        print("[streamwatch] checking for captions…", file=sys.stderr)
         dl = fetch_captions_only(args.source, work / "download")
         if dl.get("subtitle_path"):
             transcript_segments = parse_vtt(dl["subtitle_path"])
@@ -73,7 +73,7 @@ def main() -> int:
     need_video = not (depth == "captions-only" and transcript_segments)
     if need_video:
         audio_only = depth == "captions-only"
-        print("[stream-watch] downloading…" if url_source else "[stream-watch] reading local file…", file=sys.stderr)
+        print("[streamwatch] downloading…" if url_source else "[streamwatch] reading local file…", file=sys.stderr)
         dl = resolve_source(args.source, work / "download", audio_only=audio_only)
         video_path = dl["video_path"]
         if not transcript_segments and dl.get("subtitle_path"):
@@ -106,7 +106,7 @@ def main() -> int:
         budget_fn = target_frame_budget_focused if focused else target_frame_budget
         target = budget_fn(eff_duration, cap if cap is not None else 100)
         engine = _ENGINE_FOR_DEPTH[depth]
-        print(f"[stream-watch] extracting frames ({engine})…", file=sys.stderr)
+        print(f"[streamwatch] extracting frames ({engine})…", file=sys.stderr)
         frames, frame_info = select_frames(
             video_path, work / "frames", engine, cap, target,
             width=args.resolution, start=start_sec, end=end_sec,
@@ -121,9 +121,9 @@ def main() -> int:
                 transcript_segments = filter_range(segments, start_sec, end_sec) if focused else segments
                 transcript_source = f"whisper ({used})"
             except SystemExit as exc:
-                print(f"[stream-watch] whisper fallback failed: {exc}", file=sys.stderr)
+                print(f"[streamwatch] whisper fallback failed: {exc}", file=sys.stderr)
         else:
-            print(f"[stream-watch] no captions and no Whisper key — run {SCRIPT_DIR / 'setup.py'}", file=sys.stderr)
+            print(f"[streamwatch] no captions and no Whisper key — run {SCRIPT_DIR / 'setup.py'}", file=sys.stderr)
 
     _print_report(args, depth, full_duration, focused, eff_start, eff_end, eff_duration, meta, dl, cap, frames, frame_info, transcript_segments, transcript_source, work)
     return 0
@@ -132,7 +132,7 @@ def main() -> int:
 def _print_report(args, depth, full_duration, focused, eff_start, eff_end, eff_duration, meta, dl, cap, frames, frame_info, transcript_segments, transcript_source, work) -> None:
     info = dl.get("info") or {}
     print()
-    print("# stream-watch: video report")
+    print("# streamwatch: video report")
     print()
     print(f"- **Source:** {args.source}")
     if info.get("title"):

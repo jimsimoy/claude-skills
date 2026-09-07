@@ -1,4 +1,4 @@
-# /stream-watch — Video Understanding for Claude Code
+# /streamwatch — Video Understanding for Claude Code
 
 <div align="center">
 
@@ -21,7 +21,7 @@ A [Claude Code skill](https://docs.claude.com/en/docs/claude-code/skills) that l
 Point it at a video and ask a question, or just ask what happens in it:
 
 ```
-/stream-watch https://youtu.be/jNQXAC9IVRw what does the presenter say about elephants?
+/streamwatch https://youtu.be/jNQXAC9IVRw what does the presenter say about elephants?
 ```
 
 ## How it picks frames
@@ -49,27 +49,27 @@ Every tier caps at 2 fps. A video too static for scene/keyframe detection to fin
 ## Installation
 
 ```bash
-cp -r skills/stream-watch ~/.claude/skills/stream-watch
+cp -r skills/streamwatch ~/.claude/skills/streamwatch
 ```
 
-First run walks you through a one-time setup (installs `ffmpeg`/`yt-dlp` via Homebrew on macOS if missing, scaffolds `~/.config/stream-watch/.env` for an optional Whisper key). Nothing to configure manually beforehand.
+First run walks you through a one-time setup (installs `ffmpeg`/`yt-dlp` via Homebrew on macOS if missing, scaffolds `~/.config/streamwatch/.env` for an optional Whisper key). Nothing to configure manually beforehand.
 
 ## Usage
 
 ```
-/stream-watch <video-url-or-path> [question]
+/streamwatch <video-url-or-path> [question]
 ```
 
 **Focus on a specific moment** instead of scanning a whole long video:
 
 ```
-/stream-watch https://youtu.be/example --start 2:15 --end 2:45
+/streamwatch https://youtu.be/example --start 2:15 --end 2:45
 ```
 
 **Skip frames entirely, transcript only** (fastest, works from captions alone):
 
 ```
-/stream-watch https://youtu.be/example --depth captions-only
+/streamwatch https://youtu.be/example --depth captions-only
 ```
 
 Full flag reference is in [SKILL.md](SKILL.md).
@@ -78,7 +78,7 @@ Full flag reference is in [SKILL.md](SKILL.md).
 
 - Only ever contacts `api.groq.com` or `api.openai.com`, and only when a Whisper fallback is actually needed — only the extracted audio goes out, never the video itself.
 - No platform account access of any kind — `yt-dlp` only ever requests public data.
-- API keys live in `~/.config/stream-watch/.env` (chmod `0600`), never logged or echoed.
+- API keys live in `~/.config/streamwatch/.env` (chmod `0600`), never logged or echoed.
 
 Full breakdown in [SKILL.md's Security & Permissions section](SKILL.md#security--permissions).
 

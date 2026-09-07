@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Preflight / installer for /stream-watch.
+"""Preflight / installer for /streamwatch.
 
   setup.py --check   Silent on success (exit 0). Prints one line + non-zero
                       exit code when something needs fixing.
@@ -22,11 +22,11 @@ from config import CONFIG_FILE, CONFIG_DIR, get_depth  # noqa: E402
 
 REQUIRED = ["ffmpeg", "ffprobe", "yt-dlp"]
 
-ENV_TEMPLATE = """# /stream-watch configuration
+ENV_TEMPLATE = """# /streamwatch configuration
 #
 # Whisper fallback is used only when yt-dlp can't find captions (or the
 # input is a local file with no subtitle track). Leave both keys blank to
-# skip it — /stream-watch still works, just frames-only for uncaptioned
+# skip it — /streamwatch still works, just frames-only for uncaptioned
 # sources.
 #
 # Groq: https://console.groq.com/keys  (cheaper/faster, preferred)
@@ -107,7 +107,7 @@ def _warn_if_world_readable() -> None:
         return
     try:
         if CONFIG_FILE.stat().st_mode & 0o044:
-            print(f"[stream-watch] warning: {CONFIG_FILE} is readable by other users — chmod 600 it.", file=sys.stderr)
+            print(f"[streamwatch] warning: {CONFIG_FILE} is readable by other users — chmod 600 it.", file=sys.stderr)
     except OSError:
         pass
 
@@ -149,7 +149,7 @@ def cmd_check() -> int:
         bits.append(f"missing: {', '.join(s['missing_binaries'])}")
     if not s["has_api_key"] and s["first_run"]:
         bits.append("no Whisper key")
-    print(f"[stream-watch] setup needed ({'; '.join(bits)}). Run: python3 {Path(__file__).resolve()}", file=sys.stderr)
+    print(f"[streamwatch] setup needed ({'; '.join(bits)}). Run: python3 {Path(__file__).resolve()}", file=sys.stderr)
     if s["missing_binaries"] and not s["has_api_key"]:
         return 4
     if s["missing_binaries"]:
@@ -190,7 +190,7 @@ def cmd_install() -> int:
         return 0
 
     print("[setup] one step left (optional): add a Whisper API key to the config file above.")
-    print("        Without one, /stream-watch still works but falls back to frames-only when captions are missing.")
+    print("        Without one, /streamwatch still works but falls back to frames-only when captions are missing.")
     return 3
 
 

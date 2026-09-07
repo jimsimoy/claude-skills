@@ -1,11 +1,11 @@
 ---
-name: stream-watch
+name: streamwatch
 description: Watch a video (URL or local file). Downloads with yt-dlp, extracts representative frames with ffmpeg (scene-change or keyframe detection, with near-duplicate dropping), gets a timestamped transcript from captions or a Whisper fallback, and hands both to Claude to answer questions about the video.
 argument-hint: "<video-url-or-path> [question]"
 allowed-tools: Bash, Read, AskUserQuestion
 ---
 
-# /stream-watch
+# /streamwatch
 
 Gives Claude a video input it doesn't otherwise have. A bundled script
 fetches captions first (free), optionally downloads the video, extracts a
@@ -24,7 +24,7 @@ SKILL_DIR="<absolute path of the directory containing this SKILL.md>"
 test -f "$SKILL_DIR/scripts/stream_watch.py" || echo "ERROR: wrong SKILL_DIR" >&2
 ```
 
-## Step 0 — setup preflight (first `/stream-watch` call in a session)
+## Step 0 — setup preflight (first `/streamwatch` call in a session)
 
 ```bash
 python3 "${SKILL_DIR}/scripts/setup.py" --json
@@ -33,13 +33,13 @@ python3 "${SKILL_DIR}/scripts/setup.py" --json
 - `can_proceed: true` → proceed to Step 1 silently.
 - `first_run: true` → run the installer, which installs missing binaries
   where it can (Homebrew on macOS; prints the command elsewhere) and
-  scaffolds `~/.config/stream-watch/.env`:
+  scaffolds `~/.config/streamwatch/.env`:
   ```bash
   python3 "${SKILL_DIR}/scripts/setup.py"
   ```
   A missing Whisper key is fine — encourage adding one via `AskUserQuestion`
   (Groq preferred: cheaper and faster; OpenAI as the fallback), but don't
-  block on it. Without a key, `/stream-watch` still works — videos without
+  block on it. Without a key, `/streamwatch` still works — videos without
   captions just come back frames-only.
 - On later calls in the same session, skip Step 0 entirely — nothing about
   the environment changes turn to turn.
@@ -48,11 +48,11 @@ python3 "${SKILL_DIR}/scripts/setup.py" --json
 
 - A video URL (YouTube or most other yt-dlp-supported sites) or a local
   video file, with or without a specific question about it.
-- `/stream-watch <url-or-path> [question]`
+- `/streamwatch <url-or-path> [question]`
 
 ## Depth tiers
 
-Set via `STREAMWATCH_DEPTH` in `~/.config/stream-watch/.env`, or `--depth`
+Set via `STREAMWATCH_DEPTH` in `~/.config/streamwatch/.env`, or `--depth`
 per call. Default: `standard`.
 
 | Depth | Frames | Engine |
@@ -143,7 +143,7 @@ python3 "${SKILL_DIR}/scripts/stream_watch.py" "$URL" --start 2:15 --end 2:45
   captions are unavailable
 - Writes downloaded media, frames, and audio to a working directory under
   the system temp dir (or `--out-dir`)
-- Reads/creates `~/.config/stream-watch/.env` (mode `0600`) for API keys
+- Reads/creates `~/.config/streamwatch/.env` (mode `0600`) for API keys
   and a setup-complete marker
 
 **What this does NOT do:**

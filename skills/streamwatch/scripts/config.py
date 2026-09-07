@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Shared configuration helpers for /stream-watch."""
+"""Shared configuration helpers for /streamwatch."""
 from __future__ import annotations
 
 import os
 from pathlib import Path
 
-CONFIG_DIR = Path.home() / ".config" / "stream-watch"
+CONFIG_DIR = Path.home() / ".config" / "streamwatch"
 CONFIG_FILE = CONFIG_DIR / ".env"
 
 DEFAULT_DEPTH = "standard"
