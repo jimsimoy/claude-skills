@@ -306,7 +306,7 @@ def select_frames(
         selected = thin_to_cap(deduped, cap if cap is not None else len(deduped))
         return selected, {"engine": "keyframe", "candidates": len(candidates), "deduped": n_dropped, "selected": len(selected), "fallback": False}
 
-    # scene (used for both "balanced" and "token-burner")
+    # scene (used for both "standard" and "deep")
     candidates = extract_scene_candidates(video_path, out_dir, width, start, end, cap=None)
     if len(candidates) < SCENE_MIN_SHOTS:
         return _uniform_fallback(video_path, out_dir, width, cap, target, start, end, dedup_enabled, len(candidates))

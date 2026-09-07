@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
-"""Shared configuration helpers for /watch."""
+"""Shared configuration helpers for /stream-watch."""
 from __future__ import annotations
 
 import os
 from pathlib import Path
 
-CONFIG_DIR = Path.home() / ".config" / "watch-skill"
+CONFIG_DIR = Path.home() / ".config" / "stream-watch"
 CONFIG_FILE = CONFIG_DIR / ".env"
 
-DEFAULT_DETAIL = "balanced"
-VALID_DETAILS = {"transcript", "efficient", "balanced", "token-burner"}
+DEFAULT_DEPTH = "standard"
+VALID_DEPTHS = {"captions-only", "quick", "standard", "deep"}
 
-DETAIL_CAPS = {
-    "transcript": None,
-    "efficient": 50,
-    "balanced": 100,
-    "token-burner": None,
+DEPTH_CAPS = {
+    "captions-only": None,
+    "quick": 50,
+    "standard": 100,
+    "deep": None,
 }
 
 
@@ -37,11 +37,11 @@ def read_dotenv(path: Path | None = None) -> dict[str, str]:
     return values
 
 
-def get_detail() -> str:
+def get_depth() -> str:
     env_values = read_dotenv()
-    detail = os.environ.get("WATCH_DETAIL") or env_values.get("WATCH_DETAIL") or DEFAULT_DETAIL
-    return detail if detail in VALID_DETAILS else DEFAULT_DETAIL
+    depth = os.environ.get("STREAMWATCH_DEPTH") or env_values.get("STREAMWATCH_DEPTH") or DEFAULT_DEPTH
+    return depth if depth in VALID_DEPTHS else DEFAULT_DEPTH
 
 
-def frame_cap(detail: str) -> int | None:
-    return DETAIL_CAPS.get(detail, 100)
+def frame_cap(depth: str) -> int | None:
+    return DEPTH_CAPS.get(depth, 100)

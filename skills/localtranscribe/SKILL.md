@@ -1,5 +1,5 @@
 ---
-name: transcribe
+name: localtranscribe
 description: Transcribe and critically analyze audio or video content, fully offline. Accepts a .vtt file, an audio/video file, or a URL (YouTube or any yt-dlp-supported site). Produces a structured markdown analysis — outline, key terms, claims and their support, reasoning issues, notable quotes, open questions.
 argument-hint: <file-or-url>
 ---

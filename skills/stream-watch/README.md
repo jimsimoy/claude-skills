@@ -1,4 +1,4 @@
-# /watch — Video Understanding for Claude Code
+# /stream-watch — Video Understanding for Claude Code
 
 <div align="center">
 
@@ -21,19 +21,19 @@ A [Claude Code skill](https://docs.claude.com/en/docs/claude-code/skills) that l
 Point it at a video and ask a question, or just ask what happens in it:
 
 ```
-/watch https://youtu.be/jNQXAC9IVRw what does the presenter say about elephants?
+/stream-watch https://youtu.be/jNQXAC9IVRw what does the presenter say about elephants?
 ```
 
 ## How it picks frames
 
-Three engines, chosen by the detail tier:
+Three engines, chosen by the depth tier:
 
-| Detail | Frames | Engine | Speed |
+| Depth | Frames | Engine | Speed |
 |---|---|---|---|
-| `transcript` | none | — | fastest — skips video download entirely when captions exist |
-| `efficient` | up to 50 | keyframes only (`ffmpeg -skip_frame nokey`) | near-instant |
-| `balanced` (default) | up to 100 | scene-change detection | full decode, thorough |
-| `token-burner` | uncapped | scene-change detection, every shot kept | full decode, maximum coverage |
+| `captions-only` | none | — | fastest — skips video download entirely when captions exist |
+| `quick` | up to 50 | keyframes only (`ffmpeg -skip_frame nokey`) | near-instant |
+| `standard` (default) | up to 100 | scene-change detection | full decode, thorough |
+| `deep` | uncapped | scene-change detection, every shot kept | full decode, maximum coverage |
 
 Every tier caps at 2 fps. A video too static for scene/keyframe detection to find enough distinct shots (a talking-head recording, a screen share) falls back to uniform time-based sampling automatically. Near-duplicate frames — a held slide, a paused video — get dropped by a perceptual frame-delta pass so the frame budget goes to content that actually changes.
 
@@ -49,27 +49,27 @@ Every tier caps at 2 fps. A video too static for scene/keyframe detection to fin
 ## Installation
 
 ```bash
-cp -r skills/watch ~/.claude/skills/watch
+cp -r skills/stream-watch ~/.claude/skills/stream-watch
 ```
 
-First run walks you through a one-time setup (installs `ffmpeg`/`yt-dlp` via Homebrew on macOS if missing, scaffolds `~/.config/watch-skill/.env` for an optional Whisper key). Nothing to configure manually beforehand.
+First run walks you through a one-time setup (installs `ffmpeg`/`yt-dlp` via Homebrew on macOS if missing, scaffolds `~/.config/stream-watch/.env` for an optional Whisper key). Nothing to configure manually beforehand.
 
 ## Usage
 
 ```
-/watch <video-url-or-path> [question]
+/stream-watch <video-url-or-path> [question]
 ```
 
 **Focus on a specific moment** instead of scanning a whole long video:
 
 ```
-/watch https://youtu.be/example --start 2:15 --end 2:45
+/stream-watch https://youtu.be/example --start 2:15 --end 2:45
 ```
 
 **Skip frames entirely, transcript only** (fastest, works from captions alone):
 
 ```
-/watch https://youtu.be/example --detail transcript
+/stream-watch https://youtu.be/example --depth captions-only
 ```
 
 Full flag reference is in [SKILL.md](SKILL.md).
@@ -78,7 +78,7 @@ Full flag reference is in [SKILL.md](SKILL.md).
 
 - Only ever contacts `api.groq.com` or `api.openai.com`, and only when a Whisper fallback is actually needed — only the extracted audio goes out, never the video itself.
 - No platform account access of any kind — `yt-dlp` only ever requests public data.
-- API keys live in `~/.config/watch-skill/.env` (chmod `0600`), never logged or echoed.
+- API keys live in `~/.config/stream-watch/.env` (chmod `0600`), never logged or echoed.
 
 Full breakdown in [SKILL.md's Security & Permissions section](SKILL.md#security--permissions).
 
@@ -86,13 +86,13 @@ Full breakdown in [SKILL.md's Security & Permissions section](SKILL.md#security-
 
 ```
 scripts/
-  watch.py       # Entry point — orchestrates download, frames, transcript
-  download.py    # yt-dlp wrapper: video download + caption fetch
-  frames.py      # ffmpeg frame extraction (scene/keyframe/uniform) + dedup
-  transcribe.py  # WebVTT caption parsing
-  whisper.py     # Groq/OpenAI Whisper fallback (chunked upload for long audio)
-  setup.py       # Preflight check + first-run installer
-  config.py      # Shared config helpers
+  stream_watch.py  # Entry point — orchestrates download, frames, transcript
+  download.py      # yt-dlp wrapper: video download + caption fetch
+  frames.py        # ffmpeg frame extraction (scene/keyframe/uniform) + dedup
+  captions.py      # WebVTT caption parsing
+  whisper.py       # Groq/OpenAI Whisper fallback (chunked upload for long audio)
+  setup.py         # Preflight check + first-run installer
+  config.py        # Shared config helpers
 ```
 
 ---

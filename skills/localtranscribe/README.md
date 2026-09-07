@@ -1,4 +1,4 @@
-# /transcribe — Offline Audio/Video Analysis for Claude Code
+# /localtranscribe — Offline Audio/Video Analysis for Claude Code
 
 <div align="center">
 
@@ -20,12 +20,12 @@ by [Jan Ivan Simoy](https://github.com/jimsimoy)
 A [Claude Code skill](https://docs.claude.com/en/docs/claude-code/skills) that takes a `.vtt` file, an audio/video file, or a URL, transcribes it with a **local** [whisper.cpp](https://github.com/ggerganov/whisper.cpp) build (no audio ever leaves the machine), and has Claude write a structured markdown analysis — not just a transcript, but a critical read of it: the argument's structure, what claims are backed by what kind of evidence, where the reasoning is weak, and what's left ambiguous.
 
 ```
-/transcribe https://youtu.be/example
+/localtranscribe https://youtu.be/example
 ```
 
 ## Why local transcription
 
-Unlike the [`watch`](../watch) skill — which falls back to a cloud Whisper API when captions are missing — `transcribe` never sends audio anywhere. Transcription runs entirely on-device via whisper.cpp. That makes it the right choice when the content itself is sensitive, or when you'd rather not depend on (or pay for) a cloud API at all.
+Unlike the [`stream-watch`](../stream-watch) skill — which falls back to a cloud Whisper API when captions are missing — `localtranscribe` never sends audio anywhere. Transcription runs entirely on-device via whisper.cpp. That makes it the right choice when the content itself is sensitive, or when you'd rather not depend on (or pay for) a cloud API at all.
 
 ## The analysis format
 
@@ -51,7 +51,7 @@ The bundled [`ANALYSIS_PROMPT.md`](ANALYSIS_PROMPT.md) template produces:
 ## Installation
 
 ```bash
-cp -r skills/transcribe ~/.claude/skills/transcribe
+cp -r skills/localtranscribe ~/.claude/skills/localtranscribe
 ```
 
 Set `WHISPER_CPP_ROOT` if your whisper.cpp build isn't at the default `~/github.com/ggerganov/whisper.cpp`, and `WHISPER_CPP_MODEL` if you're using a model other than `ggml-medium.en.bin`.
@@ -59,7 +59,7 @@ Set `WHISPER_CPP_ROOT` if your whisper.cpp build isn't at the default `~/github.
 ## Usage
 
 ```
-/transcribe <file-or-url>
+/localtranscribe <file-or-url>
 ```
 
 Accepts a `.vtt` file directly (skips transcription), an audio/video file, or a URL. Output is a `.md` file written next to the transcript, same basename.

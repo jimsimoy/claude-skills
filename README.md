@@ -21,8 +21,8 @@ Skills extend Claude Code with a packaged workflow — instructions plus, where 
 
 | Skill | Type | What it does |
 |---|---|---|
-| [**watch**](skills/watch) | Instructions + scripts | Watch a video (URL or local file) — download, extract representative frames, get a timestamped transcript from captions or Whisper, answer questions about it |
-| [**transcribe**](skills/transcribe) | Instructions + script | Transcribe audio/video fully offline via local whisper.cpp, then produce a structured critical analysis (outline, claims, reasoning issues, quotes) |
+| [**stream-watch**](skills/stream-watch) | Instructions + scripts | Watch a video (URL or local file) — download, extract representative frames, get a timestamped transcript from captions or Whisper, answer questions about it |
+| [**localtranscribe**](skills/localtranscribe) | Instructions + script | Transcribe audio/video fully offline via local whisper.cpp, then produce a structured critical analysis (outline, claims, reasoning issues, quotes) |
 | [**gauntlet-loop**](skills/gauntlet-loop) | Instructions only | Autonomous build loop: work a backlog unattended, gate every item behind an independent critic review, only surface for a real decision |
 | [**visual-verdict**](skills/visual-verdict) | Instructions only | Score a UI implementation against a design reference across weighted dimensions, return PASS/REVISE/FAIL with concrete fixes |
 
@@ -31,17 +31,17 @@ Skills extend Claude Code with a packaged workflow — instructions plus, where 
 Copy the skill's directory into `~/.claude/skills/` (personal, all projects) or `.claude/skills/` inside a project (project-scoped):
 
 ```bash
-cp -r skills/watch ~/.claude/skills/watch
+cp -r skills/stream-watch ~/.claude/skills/stream-watch
 ```
 
-`watch` and `transcribe` bundle scripts with their own setup steps — see each skill's own `SKILL.md` for requirements (ffmpeg/yt-dlp for `watch`; a local whisper.cpp build for `transcribe`).
+`stream-watch` and `localtranscribe` bundle scripts with their own setup steps — see each skill's own `SKILL.md` for requirements (ffmpeg/yt-dlp for `stream-watch`; a local whisper.cpp build for `localtranscribe`).
 
 ## Security posture
 
 Every skill here that runs code documents exactly what it does and doesn't do in its own `SKILL.md`, under **Security & Permissions**:
 
-- `watch` only ever contacts `api.groq.com` / `api.openai.com`, and only an extracted audio clip — never the video — when Whisper is actually needed.
-- `transcribe` makes no network calls for transcription at all — everything runs locally via whisper.cpp. Only URL input touches the network (yt-dlp fetching public video/audio, same as any browser would).
+- `stream-watch` only ever contacts `api.groq.com` / `api.openai.com`, and only an extracted audio clip — never the video — when Whisper is actually needed.
+- `localtranscribe` makes no network calls for transcription at all — everything runs locally via whisper.cpp. Only URL input touches the network (yt-dlp fetching public video/audio, same as any browser would).
 - Neither touches credentials, platform accounts, browser sessions, or anything outside its own working directory and config file.
 
 No skill here shells out to unreviewed remote code, executes anything dynamically constructed from external input, or exfiltrates data beyond what's explicitly documented.
