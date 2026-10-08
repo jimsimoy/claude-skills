@@ -39,6 +39,10 @@ The core mechanism this skill enforces: **the entity that builds something never
 
 Only: the backlog is fully cleared, a genuine decision that isn't the loop's to make, stuck past the 2-fix-cycle cap, something that looks unsafe, or an external failure (rate limit, outage) with no self-fix. Routine progress — a task passing review, a commit landing — is never a reason to check in.
 
+## Provenance
+
+Assembled from several sources, including public write-ups and video walkthroughs of the "builder plus independent critic" pattern, then shaped by use. The pattern itself is common practice; this is one written-down version of it, with its own wording, a bundled reviewer prompt, and an explicit commit-authority setting. Similar autonomous-loop skills exist elsewhere and may overlap in structure.
+
 ## Installation
 
 ```bash
@@ -46,6 +50,15 @@ cp -r skills/gauntlet-loop ~/.claude/skills/gauntlet-loop
 ```
 
 No dependencies, no setup — it's a behavioral definition Claude follows, not code that runs.
+
+### Optional: install the reviewer as a named agent
+
+The skill folder includes [`gauntlet-reviewer.md`](gauntlet-reviewer.md), the full prompt for the independent critic (read-only, PASS/FAIL verdict). The copy above already brings it along and the skill can use it from there. To spawn it by name as a sub-agent, also copy it into your agents folder:
+
+```bash
+mkdir -p ~/.claude/agents
+cp skills/gauntlet-loop/gauntlet-reviewer.md ~/.claude/agents/
+```
 
 ## Before starting a run
 
