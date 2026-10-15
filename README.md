@@ -26,6 +26,7 @@ Skills extend Claude Code with a packaged workflow — instructions plus, where 
 | [**gauntlet-loop**](skills/gauntlet-loop) | Instructions only | Autonomous build loop: work a backlog unattended, gate every item behind an independent critic review, only surface for a real decision |
 | [**visual-verdict**](skills/visual-verdict) | Instructions only | Score a UI implementation against a design reference across weighted dimensions, return PASS/REVISE/FAIL with concrete fixes |
 | [**nofluff**](skills/nofluff) | Instructions only | Answer-first, filler-free replies in three density levels — strips ceremony while keeping code, paths, numbers, errors and certainty qualifiers exact |
+| [**localsave**](skills/localsave) | Instructions + script | Save a session's transcript and a secrets-free summary to local disk — only from a local session, never from or via a Claude Code web session, and never into an un-ignored git tree |
 
 ## Installing a skill
 
@@ -44,6 +45,7 @@ Every skill here that runs code documents exactly what it does and doesn't do in
 - `streamwatch` only ever contacts `api.groq.com` / `api.openai.com`, and only an extracted audio clip — never the video — when Whisper is actually needed.
 - `localtranscribe` makes no network calls for transcription at all — everything runs locally via whisper.cpp. Only URL input touches the network (yt-dlp fetching public video/audio, same as any browser would).
 - Neither touches credentials, platform accounts, browser sessions, or anything outside its own working directory and config file.
+- `localsave` bundles one shell script that copies the current session's own transcript to a local folder; no network calls, refuses in a web session (`CLAUDE_CODE_REMOTE=true`) and refuses a destination inside a git work tree unless it is gitignored there.
 - `gauntlet-loop`, `visual-verdict` and `nofluff` bundle no code at all — they are instructions. `nofluff` additionally makes no network calls and touches no files, state or credentials; it only changes how replies are worded.
 
 No skill here shells out to unreviewed remote code, executes anything dynamically constructed from external input, or exfiltrates data beyond what's explicitly documented.
