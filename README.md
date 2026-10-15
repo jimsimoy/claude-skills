@@ -25,6 +25,7 @@ Skills extend Claude Code with a packaged workflow — instructions plus, where 
 | [**localtranscribe**](skills/localtranscribe) | Instructions + script | Transcribe audio/video fully offline via local whisper.cpp, then produce a structured critical analysis (outline, claims, reasoning issues, quotes) |
 | [**gauntlet-loop**](skills/gauntlet-loop) | Instructions only | Autonomous build loop: work a backlog unattended, gate every item behind an independent critic review, only surface for a real decision |
 | [**visual-verdict**](skills/visual-verdict) | Instructions only | Score a UI implementation against a design reference across weighted dimensions, return PASS/REVISE/FAIL with concrete fixes |
+| [**realchrome**](skills/realchrome) | Instructions + script | Attach to a real Chrome the user launched and logged into (dedicated debug profile or the everyday Chrome) instead of an automation-launched browser, so bot checks such as Turnstile see an ordinary browser; read-only by default on live sites |
 | [**nofluff**](skills/nofluff) | Instructions only | Answer-first, filler-free replies in three density levels — strips ceremony while keeping code, paths, numbers, errors and certainty qualifiers exact |
 | [**localsave**](skills/localsave) | Instructions + script | Save a session's transcript and a secrets-free summary to local disk — only from a local session, never from or via a Claude Code web session, and never into an un-ignored git tree |
 
@@ -45,6 +46,7 @@ Every skill here that runs code documents exactly what it does and doesn't do in
 - `streamwatch` only ever contacts `api.groq.com` / `api.openai.com`, and only an extracted audio clip — never the video — when Whisper is actually needed.
 - `localtranscribe` makes no network calls for transcription at all — everything runs locally via whisper.cpp. Only URL input touches the network (yt-dlp fetching public video/audio, same as any browser would).
 - Neither touches credentials, platform accounts, browser sessions, or anything outside its own working directory and config file.
+- `realchrome` bundles one launcher script that starts/inspects/stops a Chrome instance with DevTools bound to `127.0.0.1`; it never solves or bypasses CAPTCHAs, and logins stay in the Chrome profile.
 - `localsave` bundles one shell script that copies the current session's own transcript to a local folder; no network calls, refuses in a web session (`CLAUDE_CODE_REMOTE=true`) and refuses a destination inside a git work tree unless it is gitignored there.
 - `gauntlet-loop`, `visual-verdict` and `nofluff` bundle no code at all — they are instructions. `nofluff` additionally makes no network calls and touches no files, state or credentials; it only changes how replies are worded.
 
